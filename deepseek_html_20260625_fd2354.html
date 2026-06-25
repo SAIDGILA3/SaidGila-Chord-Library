@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaidGila Chord Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0a0e;
+            --surface: #14121a;
+            --card: #1c1926;
+            --card-hover: #28233a;
+            --border: #2a2638;
+            --border2: #3d3655;
+            --gold: #d4b87a;
+            --gold-light: #f0e0b8;
+            --gold-dim: #8f7a4a;
+            --teal: #5fc8c8;
+            --orange: #e88b5e;
+            --red: #d96f5a;
+            --purple: #b28be0;
+            --green: #6ecb9a;
+            --text: #edeaf3;
+            --muted: #8a84a0;
+            --muted2: #b0aac9;
+            --glow: rgba(212, 184, 122, 0.08);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(212, 184, 122, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(95, 200, 200, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(178, 139, 224, 0.02) 0%, transparent 70%);
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--surface);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-dim);
+            border-radius: 10px;
+        }
+
+        /* ── HEADER – artistic music theme ── */
+        header {
+            padding: 64px 24px 48px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(212, 184, 122, 0.04) 0%, transparent 60%),
+                var(--bg);
+        }
+
+        /* abstract musical staff / waveform */
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 18px,
+                    rgba(212, 184, 122, 0.03) 18px,
+                    rgba(212, 184, 122, 0.03) 19px,
+                    transparent 19px,
+                    transparent 38px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* floating music notes abstract */
+        header::after {
+            content: '♪ ♫ ♬ ♩ ♪ ♫';
+            position: absolute;
+            font-size: 60px;
+            letter-spacing: 40px;
+            color: rgba(212, 184, 122, 0.04);
+            bottom: 10px;
+            right: -20px;
+            pointer-events: none;
+            transform: rotate(-4deg);
+            white-space: nowrap;
+            font-family: 'Georgia', serif;
+        }
+
+        .hero-label {
+            position: relative;
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: rgba(212, 184, 122, 0.06);
+            padding: 5px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 184, 122, 0.10);
+            margin-bottom: 22px;
+            backdrop-filter: blur(4px);
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1 {
+            position: relative;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: clamp(48px, 11vw, 100px);
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            color: var(--text);
+        }
+
+        h1 em {
+            color: var(--gold);
+            font-style: italic;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), #b8975a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(212, 184, 122, 0.15);
+        }
+
+        .hero-sub {
+            position: relative;
+            margin-top: 18px;
+            color: var(--muted2);
+            font-size: 14px;
+            letter-spacing: .06em;
+            font-weight: 300;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-sub span {
+            color: var(--gold);
+            font-weight: 400;
+        }
+
+        .hero-count {
+            position: relative;
+            display: inline-block;
+            margin-top: 22px;
+            padding: 7px 28px;
+            border: 1px solid rgba(212, 184, 122, 0.20);
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: .1em;
+            background: rgba(212, 184, 122, 0.03);
+            backdrop-filter: blur(2px);
+            transition: all .4s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-count:hover {
+            border-color: var(--gold);
+            background: rgba(212, 184, 122, 0.06);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(212, 184, 122, 0.05);
+        }
+
+        /* ── CONTROLS ── */
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 10, 14, 0.92);
+            backdrop-filter: blur(16px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 40px;
+            padding: 9px 20px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color .3s, box-shadow .3s, background .3s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 184, 122, 0.08), inset 0 0 0 1px rgba(212, 184, 122, 0.05);
+            background: rgba(20, 18, 26, 0.8);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--muted);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .search-bar input::selection {
+            background: var(--gold);
+            color: var(--bg);
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px 10px;
+            transition: all .2s;
+            border-radius: 50%;
+            line-height: 1;
+            font-weight: 300;
+        }
+
+        .clear-btn:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+            transform: rotate(90deg);
+        }
+
+        .result-count {
+            font-size: 11px;
+            color: var(--muted);
+            white-space: nowrap;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .tabs-wrap {
+            overflow-x: auto;
+            display: flex;
+            padding: 0 20px;
+            gap: 2px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border2) transparent;
+        }
+
+        .tabs-wrap::-webkit-scrollbar {
+            height: 2px;
+        }
+        .tabs-wrap::-webkit-scrollbar-thumb {
+            background: var(--gold-dim);
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            flex-shrink: 0;
+            padding: 13px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .25s ease;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: all .3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: transparent;
+        }
+
+        .tab-btn.active::after {
+            width: 60%;
+        }
+
+        .root-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 20px 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .root-btn {
+            padding: 4px 16px;
+            border: 1px solid var(--border2);
+            border-radius: 40px;
+            background: none;
+            color: var(--muted2);
+            font-family: 'Inter', sans-serif;
+            font-size: 10.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .25s ease;
+            letter-spacing: 0.03em;
+        }
+
+        .root-btn:hover {
+            border-color: var(--gold-dim);
+            color: var(--text);
+            background: rgba(212, 184, 122, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .root-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #0b0a0e;
+            font-weight: 600;
+            box-shadow: 0 2px 12px rgba(212, 184, 122, 0.20);
+        }
+
+        /* ── LEGEND ── */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            padding: 12px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10.5px;
+            color: var(--muted2);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+
+        .l-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--text);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+        .l-open {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1.5px solid var(--teal);
+            background: transparent;
+        }
+        .l-x {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--red);
+            line-height: 1;
+            opacity: 0.8;
+        }
+        .l-barre {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 184, 122, 0.25);
+        }
+
+        /* ── CONTENT ── */
+        .content {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 36px 24px 60px;
+        }
+
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 0 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .sec-head::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--gold);
+            opacity: 0.3;
+        }
+
+        .sec-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 26px;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        .sec-badge {
+            font-size: 8.5px;
+            font-weight: 600;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            padding: 3px 14px;
+            border-radius: 40px;
+            background: rgba(212, 184, 122, 0.06);
+            color: var(--gold);
+            border: 1px solid rgba(212, 184, 122, 0.08);
+        }
+
+        .badge-b {
+            background: rgba(95, 200, 200, 0.06);
+            color: var(--teal);
+            border-color: rgba(95, 200, 200, 0.10);
+        }
+        .badge-i {
+            background: rgba(212, 184, 122, 0.06);
+            color: var(--gold);
+            border-color: rgba(212, 184, 122, 0.10);
+        }
+        .badge-a {
+            background: rgba(232, 139, 94, 0.06);
+            color: var(--orange);
+            border-color: rgba(232, 139, 94, 0.10);
+        }
+        .badge-p {
+            background: rgba(217, 111, 90, 0.06);
+            color: var(--red);
+            border-color: rgba(217, 111, 90, 0.10);
+        }
+        .badge-j {
+            background: rgba(178, 139, 224, 0.06);
+            color: var(--purple);
+            border-color: rgba(178, 139, 224, 0.10);
+        }
+        .badge-s {
+            background: rgba(110, 203, 154, 0.06);
+            color: var(--green);
+            border-color: rgba(110, 203, 154, 0.10);
+        }
+
+        .sec-count {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .section.hidden {
+            display: none;
+        }
+
+        .chord-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(162px, 1fr));
+            gap: 16px;
+        }
+
+        .chord-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px 16px;
+            transition: all .3s cubic-bezier(0.2, 0, 0, 1);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chord-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent 40%, rgba(212, 184, 122, 0.05) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .4s ease;
+        }
+
+        .chord-card:hover::before {
+            opacity: 1;
+        }
+
+        .chord-card:hover {
+            border-color: var(--gold-dim);
+            background: var(--card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(212, 184, 122, 0.05);
+        }
+
+        .chord-card.hidden {
+            display: none;
+        }
+
+        .chord-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--gold);
+            margin-bottom: 2px;
+            line-height: 1.2;
+            transition: color .3s;
+        }
+
+        .chord-card:hover .chord-name {
+            color: var(--gold-light);
+        }
+
+        .chord-label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: .04em;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .chord-notes {
+            font-size: 8.5px;
+            color: var(--muted);
+            margin-top: 10px;
+            letter-spacing: .04em;
+            opacity: 0.5;
+            font-weight: 300;
+            font-family: 'Inter', monospace;
+            transition: opacity .3s;
+        }
+
+        .chord-card:hover .chord-notes {
+            opacity: 0.8;
+        }
+
+        .no-results {
+            padding: 64px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            letter-spacing: .05em;
+            display: none;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px dashed var(--border2);
+            font-weight: 300;
+        }
+
+        .no-results::before {
+            content: '♫';
+            display: block;
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.2;
+            color: var(--gold);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+            .chord-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 9px;
+            }
+            .root-btn {
+                padding: 3px 12px;
+                font-size: 9.5px;
+            }
+            .sec-title {
+                font-size: 20px;
+            }
+            header {
+                padding: 40px 16px 32px;
+            }
+            .search-bar {
+                padding: 10px 16px;
+            }
+            .legend {
+                gap: 14px;
+                padding: 8px 12px;
+            }
+            .legend-item {
+                font-size: 9.5px;
+            }
+            .hero-count {
+                padding: 5px 18px;
+                font-size: 11px;
+            }
+            .sec-head {
+                padding: 16px 0 12px;
+            }
+            .content {
+                padding: 20px 12px 40px;
+            }
+            header::after {
+                font-size: 30px;
+                letter-spacing: 20px;
+                bottom: 20px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .chord-grid {
+                grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        /* ── CHORD SVG STYLING ── */
+        .chord-card svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            transition: background .3s;
+        }
+
+        .chord-card:hover svg {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* subtle pulse on card hover */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .chord-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 184, 122, 0.1), transparent);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .chord-card:hover::after {
+            opacity: 1;
+            animation: shimmer 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hero-label">✦ Complete Reference</div>
+        <h1>SAIDGILA<br /><em>Chord</em><br />Library</h1>
+        <p class="hero-sub">Every chord type across all 12 roots — <span>crafted for modern players</span></p>
+        <div class="hero-count" id="total-count">Loading...</div>
+    </header>
+
+    <div class="controls">
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search chord… e.g. Am7, Cmaj9, F#dim" autocomplete="off" spellcheck="false" />
+            <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">✕</button>
+            <span class="result-count" id="result-count"></span>
+        </div>
+        <div class="tabs-wrap" id="tabs"></div>
+        <div class="root-filter" id="root-filter"></div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="l-dot"></span>Fretted</div>
+        <div class="legend-item"><span class="l-open"></span>Open</div>
+        <div class="legend-item"><span class="l-x">✕</span>Muted</div>
+        <div class="legend-item"><span class="l-barre"></span>Barre</div>
+    </div>
+
+    <div class="content">
+        <div id="sections"></div>
+        <div class="no-results" id="no-results">No chords found. Try a different search term.</div>
+    </div>
+
+    <script>
+        // ── DATA ──
+        const ROOT_DISPLAY = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const CATEGORIES = [
+            { id: 'all', label: 'All Chords' },
+            { id: 'major', label: 'Major' },
+            { id: 'minor', label: 'Minor' },
+            { id: 'dom7', label: 'Dominant 7th' },
+            { id: 'maj7', label: 'Major 7th' },
+            { id: 'min7', label: 'Minor 7th' },
+            { id: 'sus', label: 'Sus & Add' },
+            { id: 'ext', label: '9th / 11th / 13th' },
+            { id: 'dim', label: 'Dim & Aug' },
+            { id: 'power', label: 'Power' },
+            { id: 'special', label: 'Special' }
+        ];
+        const CATEGORY_META = {
+            major: { label: 'Major Chords', badge: 'badge-b' },
+            minor: { label: 'Minor Chords', badge: 'badge-b' },
+            dom7: { label: 'Dominant 7th Chords', badge: 'badge-i' },
+            maj7: { label: 'Major 7th Chords', badge: 'badge-i' },
+            min7: { label: 'Minor 7th Chords', badge: 'badge-i' },
+            sus: { label: 'Sus, Add & Open Chords', badge: 'badge-a' },
+            ext: { label: '9th / 11th / 13th', badge: 'badge-a' },
+            dim: { label: 'Dim, Aug & Half-Dim', badge: 'badge-p' },
+            power: { label: 'Power Chords', badge: 'badge-s' },
+            special: { label: 'Special & Slash Chords', badge: 'badge-j' }
+        };
+
+        // ── HELPER ──
+        function V(frets, sf = 1, bf = -1, notes = '') { return { frets, sf, bf, notes }; }
+
+        // ── VOICINGS ── (compact, full library)
+        const VOICINGS = {
+            major: {
+                C: V([-1, 3, 2, 0, 1, 0], 1, -1, 'C E G C E'),
+                D: V([-1, -1, 0, 2, 3, 2], 1, -1, 'D F# A D'),
+                E: V([0, 2, 2, 1, 0, 0], 1, -1, 'E B E G# B E'),
+                F: V([1, 3, 3, 2, 1, 1], 1, 0, 'F C F A C F'),
+                G: V([3, 2, 0, 0, 0, 3], 1, -1, 'G B D G B G'),
+                A: V([-1, 0, 2, 2, 2, 0], 1, -1, 'A E A C# E'),
+                B: V([-1, 2, 4, 4, 4, 2], 2, 1, 'B F# B D# F#'),
+                'C#': V([-1, 4, 6, 6, 6, 4], 4, 1, 'C# G# C# F G#'),
+                'D#': V([-1, 6, 8, 8, 8, 6], 6, 1, 'D# A# D# G A#'),
+                'F#': V([2, 4, 4, 3, 2, 2], 2, 0, 'F# C# F# A# C# F#'),
+                'G#': V([4, 6, 6, 5, 4, 4], 4, 0, 'G# D# G# C D# G#'),
+                'A#': V([6, 8, 8, 7, 6, 6], 6, 0, 'A# F A# D F A#')
+            },
+            minor: {
+                C: V([-1, 3, 5, 5, 4, 3], 3, 1, 'C G C Eb G'),
+                D: V([-1, -1, 0, 2, 3, 1], 1, -1, 'D A D F'),
+                E: V([0, 2, 2, 0, 0, 0], 1, -1, 'E B E G B E'),
+                F: V([1, 3, 3, 1, 1, 1], 1, 0, 'F C F Ab C F'),
+                G: V([3, 5, 5, 3, 3, 3], 3, 0, 'G D G Bb D G'),
+                A: V([-1, 0, 2, 2, 1, 0], 1, -1, 'A E A C E'),
+                B: V([-1, 2, 4, 4, 3, 2], 2, 1, 'B F# B D F#'),
+                'C#': V([-1, 4, 6, 6, 5, 4], 4, 1, 'C# G# C# E G#'),
+                'D#': V([-1, 6, 8, 8, 7, 6], 6, 1, 'D# A# D# F# A#'),
+                'F#': V([2, 4, 4, 2, 2, 2], 2, 0, 'F# C# F# A C# F#'),
+                'G#': V([4, 6, 6, 4, 4, 4], 4, 0, 'G# D# G# B D# G#'),
+                'A#': V([6, 8, 8, 6, 6, 6], 6, 0, 'A# F A# C# F A#')
+            },
+            dom7: {
+                C: V([-1, 3, 2, 3, 1, 0], 1, -1, 'C E Bb C E'),
+                D: V([-1, -1, 0, 2, 1, 2], 1, -1, 'D A C F#'),
+                E: V([0, 2, 0, 1, 0, 0], 1, -1, 'E B E G# D E'),
+                F: V([1, 1, 2, 1, 1, 1], 1, 0, 'F C F A Eb F'),
+                G: V([3, 2, 0, 0, 0, 1], 1, -1, 'G B D G B F'),
+                A: V([-1, 0, 2, 0, 2, 0], 1, -1, 'A E G C# E'),
+                B: V([-1, 2, 1, 2, 0, 2], 1, -1, 'B F# A D F#'),
+                'C#': V([-1, 4, 3, 4, 2, 4], 2, -1, 'C# G# B F G#'),
+                'D#': V([-1, 6, 5, 6, 4, 4], 4, 3, 'D# A# C# G A#'),
+                'F#': V([2, 4, 2, 3, 2, 2], 2, 0, 'F# C# E A# C# F#'),
+                'G#': V([4, 6, 4, 5, 4, 4], 4, 0, 'G# D# F# C D# G#'),
+                'A#': V([6, 8, 6, 7, 6, 6], 6, 0, 'A# F G# D F A#')
+            },
+            maj7: {
+                C: V([-1, 3, 2, 0, 0, 0], 1, -1, 'C E G B E'),
+                D: V([-1, -1, 0, 2, 2, 2], 1, -1, 'D A C# F#'),
+                E: V([0, 2, 1, 1, 0, 0], 1, -1, 'E B D# G# B E'),
+                F: V([-1, -1, 3, 2, 1, 0], 1, -1, 'F A C E'),
+                G: V([3, 2, 0, 0, 0, 2], 1, -1, 'G B D G B F#'),
+                A: V([-1, 0, 2, 1, 2, 0], 1, -1, 'A E G# C# E'),
+                B: V([-1, 2, 4, 3, 4, 2], 2, 1, 'B F# A# D# F#'),
+                'C#': V([-1, 4, 3, 2, 1, -1], 1, -1, 'C# G# C F G#'),
+                'D#': V([-1, 6, 5, 7, 7, 6], 5, -1, 'D# A# D G A#'),
+                'F#': V([2, 4, 3, 3, 2, 2], 2, 0, 'F# C# F A# C# F#'),
+                'G#': V([4, 6, 5, 5, 4, 4], 4, 0, 'G# D# G C D# G#'),
+                'A#': V([-1, 1, 3, 2, 3, 1], 1, 0, 'A# F A D F A#')
+            },
+            min7: {
+                C: V([-1, 3, 5, 3, 4, 3], 3, 1, 'C G Bb Eb G'),
+                D: V([-1, -1, 0, 2, 1, 1], 1, -1, 'D A C F'),
+                E: V([0, 2, 2, 0, 3, 0], 1, -1, 'E B E G D E'),
+                F: V([1, 3, 1, 1, 1, 1], 1, 0, 'F C Eb Ab C F'),
+                G: V([3, 5, 3, 3, 3, 3], 3, 0, 'G D F Bb D G'),
+                A: V([-1, 0, 2, 0, 1, 0], 1, -1, 'A E G C E'),
+                B: V([-1, 2, 4, 2, 3, 2], 2, 1, 'B F# A D F#'),
+                'C#': V([-1, 4, 6, 4, 5, 4], 4, 1, 'C# G# B E G#'),
+                'D#': V([-1, 6, 8, 6, 7, 6], 6, 1, 'D# A# C# F# A#'),
+                'F#': V([2, 4, 2, 2, 2, 2], 2, 0, 'F# C# E A C# F#'),
+                'G#': V([4, 6, 4, 4, 4, 4], 4, 0, 'G# D# F# B D# G#'),
+                'A#': V([6, 8, 6, 6, 6, 6], 6, 0, 'A# F G# C# F A#')
+            },
+            sus2: {
+                A: V([-1, 0, 2, 2, 0, 0], 1, -1, 'A E A B E'),
+                D: V([-1, -1, 0, 2, 3, 0], 1, -1, 'D A D E A'),
+                E: V([0, 2, 2, 2, 0, 0], 1, -1, 'E B E F# B E'),
+                G: V([3, 2, 0, 2, 3, 3], 1, -1, 'G B D A B G'),
+                C: V([-1, 3, 0, 0, 3, 3], 1, -1, 'C G D G C G'),
+                B: V([-1, 2, 4, 4, 2, 2], 2, 1, 'B F# B C# F#'),
+                F: V([1, 3, 3, 3, 1, 1], 1, 0, 'F C F G C F'),
+                'F#': V([2, 4, 4, 4, 2, 2], 2, 0, 'F# C# F# G# C# F#'),
+                'G#': V([4, 6, 6, 6, 4, 4], 4, 0, 'G# D# G# A# D# G#'),
+                'C#': V([-1, 4, 6, 6, 4, 4], 4, 1, 'C# G# C# D# G#'),
+                'D#': V([-1, 6, 8, 8, 6, 6], 6, 1, 'D# A# D# F A#'),
+                'A#': V([-1, 1, 3, 3, 1, 1], 1, 0, 'A# F A# C F')
+            },
+            sus4: {
+                A: V([-1, 0, 2, 2, 3, 0], 1, -1, 'A E A D E'),
+                D: V([-1, -1, 0, 2, 3, 3], 1, -1, 'D A D G A'),
+                E: V([0, 2, 2, 2, 0, 0], 1, -1, 'E B E A B E'),
+                G: V([3, 3, 0, 0, 1, 3], 1, -1, 'G C D G C G'),
+                C: V([-1, 3, 3, 0, 1, 1], 1, -1, 'C G C F G C'),
+                B: V([-1, 2, 4, 4, 5, 2], 2, 1, 'B F# B E F#'),
+                F: V([1, 1, 3, 3, 4, 1], 1, 0, 'F C F Bb C F'),
+                'F#': V([2, 4, 4, 4, 2, 2], 2, 0, 'F# C# F# B C# F#'),
+                'G#': V([4, 4, 6, 6, 7, 4], 4, 0, 'G# D# G# C# D# G#'),
+                'C#': V([-1, 4, 6, 6, 7, 4], 4, 1, 'C# G# C# F# G#'),
+                'D#': V([-1, 6, 8, 8, 9, 6], 6, 1, 'D# A# D# G# A#'),
+                'A#': V([-1, 1, 3, 3, 4, 1], 1, 0, 'A# F A# D# F')
+            },
+            add9: {
+                C: V([-1, 3, 2, 0, 3, 0], 1, -1, 'C E G D E'),
+                G: V([3, 2, 0, 2, 0, 3], 1, -1, 'G B D A B G'),
+                D: V([-1, -1, 0, 2, 3, 2], 1, -1, 'D A D F# E'),
+                A: V([-1, 0, 2, 2, 2, 2], 1, -1, 'A E A C# E B'),
+                E: V([0, 2, 2, 1, 0, 2], 1, -1, 'E B E G# B F#'),
+                F: V([-1, -1, 3, 2, 1, 3], 1, -1, 'F A C G'),
+                B: V([-1, 2, 4, 4, 2, 4], 2, 1, 'B F# B D# F# C#'),
+                'F#': V([2, 4, 4, 3, 2, 4], 2, 0, 'F# C# F# A# C# G#')
+            },
+            dom9: {
+                C: V([-1, 3, 2, 3, 3, 3], 1, -1, 'C E Bb D G'),
+                G: V([3, 2, 3, 2, 3, 3], 1, -1, 'G B F A D G'),
+                A: V([-1, 0, 2, 0, 2, 3], 1, -1, 'A E G C# E B'),
+                D: V([-1, 5, 4, 5, 5, 5], 4, 3, 'D A C F# A E'),
+                E: V([0, 2, 0, 1, 3, 0], 1, -1, 'E B E G# D F#'),
+                F: V([1, 1, 2, 1, 3, 1], 1, 0, 'F C Eb A C G'),
+                B: V([-1, 2, 1, 2, 2, 2], 1, 3, 'B F# A D F# C#'),
+                'F#': V([2, 4, 2, 3, 4, 2], 2, 0, 'F# C# E A# C# G#'),
+                'G#': V([4, 6, 4, 5, 6, 4], 4, 0, 'G# D# F# C D# A#'),
+                'C#': V([-1, 4, 3, 4, 4, 4], 3, 1, 'C# G# B F G# D#'),
+                'D#': V([-1, 6, 5, 6, 6, 6], 5, 3, 'D# A# C# G A# F'),
+                'A#': V([6, 8, 6, 7, 8, 6], 6, 0, 'A# F G# D F C')
+            },
+            maj9: {
+                C: V([-1, 3, 2, 4, 3, 0], 1, -1, 'C E B D G'),
+                G: V([3, 2, 0, 2, 0, 2], 1, -1, 'G B D A F# D'),
+                A: V([-1, 0, 2, 1, 2, 2], 1, -1, 'A E G# B E B'),
+                D: V([-1, 5, 4, 4, 5, 5], 4, -1, 'D A C# E A E'),
+                F: V([-1, -1, 3, 2, 1, 3], 1, -1, 'F A C E G'),
+                E: V([0, 2, 1, 1, 0, 2], 1, -1, 'E B D# G# B F#'),
+                B: V([-1, 2, 4, 3, 4, 4], 2, 1, 'B F# A# D# F# C#'),
+                'F#': V([2, 4, 3, 3, 2, 4], 2, 0, 'F# C# F A# C# G#')
+            },
+            min9: {
+                A: V([-1, 0, 2, 0, 1, 3], 1, -1, 'A E G C B'),
+                D: V([-1, 5, 3, 5, 5, 5], 3, 3, 'D A C F E'),
+                E: V([0, 2, 2, 0, 3, 2], 1, -1, 'E B E G D F#'),
+                C: V([-1, 3, 5, 3, 4, 5], 3, 1, 'C G Bb Eb G D'),
+                G: V([3, 5, 3, 3, 3, 5], 3, 0, 'G D F Bb D A'),
+                F: V([1, 3, 1, 1, 1, 3], 1, 0, 'F C Eb Ab C G'),
+                B: V([-1, 2, 4, 2, 3, 4], 2, 1, 'B F# A D F# C#'),
+                'C#': V([-1, 4, 6, 4, 5, 6], 4, 1, 'C# G# B E G# D#'),
+                'F#': V([2, 4, 2, 2, 2, 4], 2, 0, 'F# C# E A C# G#'),
+                'G#': V([4, 6, 4, 4, 4, 6], 4, 0, 'G# D# F# B D# A#')
+            },
+            dom11: {
+                A: V([-1, 0, 0, 0, 0, 0], 1, -1, 'A E G D E A'),
+                C: V([-1, 3, 3, 3, 4, 3], 3, 1, 'C G Bb F G D'),
+                G: V([3, 5, 3, 3, 3, 1], 1, 3, 'G D F C D A'),
+                E: V([0, 2, 0, 2, 0, 0], 1, -1, 'E B E G# D A'),
+                D: V([-1, 5, 3, 2, 3, 5], 2, -1, 'D A C G A E'),
+                F: V([1, 3, 1, 1, 1, 3], 1, 0, 'F C Eb Bb C G'),
+                B: V([-1, 2, 4, 2, 3, 2], 2, 1, 'B F# A E F# C#')
+            },
+            dom13: {
+                C: V([-1, 3, 2, 3, 3, 3], 1, 3, 'C E Bb D G A'),
+                G: V([3, 2, 0, 0, 0, 0], 1, -1, 'G B D G B E'),
+                A: V([-1, 0, 2, 0, 2, 2], 1, -1, 'A E G C# E F#'),
+                D: V([-1, 5, 4, 4, 5, 7], 4, -1, 'D A C F# A B'),
+                E: V([0, 2, 0, 1, 0, 2], 1, -1, 'E B E G# D C#'),
+                F: V([1, 1, 2, 1, 1, 3], 1, 0, 'F C Eb A C D'),
+                B: V([-1, 2, 1, 2, 2, 4], 1, 3, 'B F# A D F# G#'),
+                'A#': V([6, 8, 6, 7, 6, 8], 6, 0, 'A# F G# D F C')
+            },
+            dim: {
+                C: V([-1, 3, 4, 2, 4, 2], 2, -1, 'C Eb Gb A'),
+                D: V([-1, -1, 0, 1, 0, 1], 1, -1, 'D F Ab C'),
+                E: V([0, 1, 2, 0, 2, 0], 1, -1, 'E G Bb D'),
+                F: V([-1, -1, 3, 4, 3, 4], 3, -1, 'F Ab Cb Eb'),
+                G: V([3, 4, 2, 3, 2, 3], 2, -1, 'G Bb Db F'),
+                A: V([-1, 0, 1, 2, 1, 2], 1, -1, 'A C Eb G'),
+                B: V([-1, 2, 3, 1, 3, 1], 1, -1, 'B D F A'),
+                'C#': V([-1, 4, 5, 3, 5, 3], 3, -1, 'C# E G A#'),
+                'D#': V([-1, 1, 2, 0, 2, 0], 1, -1, 'D# F# A C'),
+                'F#': V([2, 3, 1, 2, 1, 2], 1, -1, 'F# A C Eb'),
+                'G#': V([4, 5, 3, 4, 3, 4], 3, -1, 'G# B D F'),
+                'A#': V([-1, 1, 2, 0, 2, 0], 1, -1, 'A# C# E G')
+            },
+            dim7: {
+                A: V([-1, 0, 1, 2, 1, 2], 1, -1, 'A C Eb G'),
+                B: V([-1, 2, 0, 1, 0, 1], 1, -1, 'B D F G#'),
+                C: V([-1, -1, 1, 2, 1, 2], 1, -1, 'C Eb Gb A'),
+                D: V([-1, -1, 0, 1, 0, 1], 1, -1, 'D F Ab B'),
+                E: V([0, 1, 2, 0, 2, 0], 1, -1, 'E G Bb C#'),
+                G: V([3, 4, 2, 3, 2, 3], 2, -1, 'G Bb Db E'),
+                'F#': V([2, 3, 4, 2, 4, 2], 2, -1, 'F# A C Eb'),
+                'C#': V([-1, 4, 5, 3, 5, 3], 3, -1, 'C# E G A#'),
+                'D#': V([-1, 1, 2, 0, 2, 0], 1, -1, 'D# F# A C'),
+                'G#': V([4, 5, 3, 4, 3, 4], 3, -1, 'G# B D F')
+            },
+            hdim: {
+                B: V([-1, 2, 3, 2, 3, -1], 2, -1, 'B D F A'),
+                E: V([0, 1, 0, 0, 3, 0], 1, -1, 'E Bb D G B'),
+                A: V([-1, 0, 1, 1, 1, 0], 1, -1, 'A Eb G C'),
+                D: V([-1, -1, 0, 1, 1, 1], 1, -1, 'D Ab C F'),
+                G: V([3, 4, 3, 3, 3, -1], 3, -1, 'G Db F Bb'),
+                C: V([-1, 3, 4, 3, 4, -1], 3, -1, 'C Gb Bb Eb'),
+                F: V([-1, -1, 3, 4, 4, 4], 3, -1, 'F B Eb Ab'),
+                'F#': V([2, 3, 2, 2, 2, -1], 2, -1, 'F# C E A'),
+                'C#': V([-1, 4, 5, 4, 5, -1], 4, -1, 'C# G B E'),
+                'G#': V([4, 5, 4, 4, 4, -1], 4, -1, 'G# D F B')
+            },
+            aug: {
+                C: V([-1, 3, 2, 1, 1, 0], 1, -1, 'C E G# E G# C'),
+                E: V([0, 3, 2, 1, 1, 0], 1, -1, 'E B E G# C E'),
+                A: V([-1, 0, 3, 2, 2, 1], 1, -1, 'A F A C# F A'),
+                G: V([3, 2, 1, 0, 0, -1], 1, -1, 'G B D# G B'),
+                D: V([-1, -1, 0, 3, 3, 2], 1, -1, 'D A# D F# A#'),
+                F: V([-1, -1, 3, 2, 2, 1], 1, -1, 'F A C# F A'),
+                B: V([-1, 2, 1, 0, 0, -1], 1, -1, 'B F# A# D# F#'),
+                'F#': V([2, 3, 2, 1, 1, -1], 1, -1, 'F# A# C# E#'),
+                'G#': V([4, 5, 4, 3, 3, -1], 3, -1, 'G# C E G')
+            },
+            power: {
+                E: V([0, 2, 2, -1, -1, -1], 1, -1, 'E B E'),
+                A: V([-1, 0, 2, 2, -1, -1], 1, -1, 'A E A'),
+                D: V([-1, -1, 0, 2, 3, -1], 1, -1, 'D A D'),
+                G: V([3, 5, 5, -1, -1, -1], 3, -1, 'G D G'),
+                C: V([-1, 3, 5, 5, -1, -1], 3, -1, 'C G C'),
+                F: V([1, 3, 3, -1, -1, -1], 1, -1, 'F C F'),
+                B: V([-1, 2, 4, 4, -1, -1], 2, -1, 'B F# B'),
+                'F#': V([2, 4, 4, -1, -1, -1], 2, -1, 'F# C# F#'),
+                'G#': V([4, 6, 6, -1, -1, -1], 4, -1, 'G# D# G#'),
+                'A#': V([-1, 1, 3, 3, -1, -1], 1, -1, 'A# F A#'),
+                'C#': V([-1, 4, 6, 6, -1, -1], 4, -1, 'C# G# C#'),
+                'D#': V([-1, 6, 8, 8, -1, -1], 6, -1, 'D# A# D#')
+            },
+            '7sus4': {
+                C: V([-1, 3, 3, 3, 1, 1], 1, 0, 'C F G Bb F'),
+                D: V([-1, 5, 5, 5, 3, 3], 5, 0, 'D G A C G'),
+                E: V([0, 2, 2, 2, 0, 0], 1, -1, 'E A B E A'),
+                F: V([1, 3, 3, 3, 1, 1], 1, 0, 'F Bb C Eb Bb'),
+                G: V([3, 5, 5, 5, 3, 3], 3, 0, 'G C D F C'),
+                A: V([-1, 0, 2, 0, 1, 0], 1, -1, 'A D E G E'),
+                B: V([-1, 2, 4, 4, 2, 2], 2, 0, 'B E F# A E'),
+                'C#': V([-1, 4, 6, 6, 4, 4], 4, 0, 'C# F# G# B F#'),
+                'D#': V([-1, 6, 8, 8, 6, 6], 6, 0, 'D# G# A# C# G#'),
+                'F#': V([2, 4, 4, 4, 2, 2], 2, 0, 'F# B C# E B'),
+                'G#': V([4, 6, 6, 6, 4, 4], 4, 0, 'G# C# D# F# C#'),
+                'A#': V([-1, 1, 3, 3, 1, 1], 1, 0, 'A# D# F G# D#')
+            },
+            m6: {
+                C: V([-1, 3, 1, 2, 1, 0], 1, -1, 'C Eb G A E'),
+                D: V([-1, -1, 0, 2, 1, 0], 1, -1, 'D A D F B'),
+                E: V([0, 2, 2, 1, 0, 2], 1, -1, 'E B E G C#'),
+                F: V([1, 3, 1, 2, 1, 1], 1, 0, 'F C Eb Ab D'),
+                G: V([3, 5, 3, 4, 3, 3], 3, 0, 'G D Bb Eb D'),
+                A: V([-1, 0, 2, 1, 1, 0], 1, -1, 'A E A C F#'),
+                B: V([-1, 2, 0, 1, 0, 2], 1, -1, 'B F# B D G#'),
+                'C#': V([-1, 4, 2, 3, 2, 1], 1, -1, 'C# G# C# E A#'),
+                'D#': V([-1, 6, 4, 5, 4, 3], 3, -1, 'D# A# D# F# C'),
+                'F#': V([2, 4, 2, 3, 2, 2], 2, 0, 'F# C# F# A D#'),
+                'G#': V([4, 6, 4, 5, 4, 4], 4, 0, 'G# D# G# B F'),
+                'A#': V([-1, 1, 3, 3, 1, 3], 1, 0, 'A# F A# C# G')
+            },
+            '6/9': {
+                C: V([-1, 3, 2, 2, 3, 3], 1, -1, 'C E G A D G'),
+                D: V([-1, -1, 0, 2, 3, 0], 1, -1, 'D A D F# E'),
+                E: V([0, 2, 2, 1, 0, 2], 1, -1, 'E B E G# C# F#'),
+                F: V([-1, 3, 3, 2, 3, 3], 1, 0, 'F C F A G C'),
+                G: V([3, 2, 0, 0, 0, 0], 1, -1, 'G B D G B E'),
+                A: V([-1, 0, 2, 2, 2, 2], 1, -1, 'A E A C# F# B'),
+                B: V([-1, 2, 4, 4, 4, 4], 2, 1, 'B F# B D# G# C#'),
+                'C#': V([-1, 4, 6, 6, 6, 6], 4, 1, 'C# G# C# F A# D#'),
+                'D#': V([-1, 6, 8, 8, 8, 8], 6, 1, 'D# A# D# G C F'),
+                'F#': V([2, 4, 4, 3, 4, 4], 2, 0, 'F# C# F# A# D# G#'),
+                'G#': V([4, 6, 6, 5, 6, 6], 4, 0, 'G# D# G# C F A#'),
+                'A#': V([6, 8, 8, 7, 8, 8], 6, 0, 'A# F A# D G C')
+            },
+            m11: {
+                A: V([-1, 0, 0, 0, 0, 0], 1, -1, 'A E G D E A'),
+                D: V([-1, 5, 5, 5, 5, 5], 5, 0, 'D A C G A D'),
+                E: V([0, 2, 0, 0, 0, 0], 1, -1, 'E B E G D A'),
+                G: V([3, 5, 3, 3, 3, 3], 3, 0, 'G D F C D G'),
+                C: V([-1, 3, 5, 3, 3, 3], 3, 1, 'C G Bb F G C'),
+                F: V([1, 3, 1, 1, 1, 1], 1, 0, 'F C Eb Bb C F'),
+                B: V([-1, 2, 4, 2, 2, 2], 2, 1, 'B F# A E F# B'),
+                'F#': V([2, 4, 2, 2, 2, 2], 2, 0, 'F# C# E B C# F#'),
+                'G#': V([4, 6, 4, 4, 4, 4], 4, 0, 'G# D# F# C# D# G#'),
+                'C#': V([-1, 4, 6, 4, 4, 4], 4, 1, 'C# G# B F# G# C#')
+            },
+            m13: {
+                A: V([-1, 0, 2, 0, 1, 0], 1, -1, 'A E G C F# E'),
+                D: V([-1, 5, 3, 2, 3, 5], 2, -1, 'D A C F E B'),
+                E: V([0, 2, 2, 0, 3, 2], 1, -1, 'E B E G D C#'),
+                G: V([3, 5, 3, 2, 3, 5], 2, 0, 'G D F Bb E D'),
+                C: V([-1, 3, 5, 3, 3, 5], 3, 1, 'C G Bb Eb A G'),
+                F: V([1, 3, 1, 1, 1, 3], 1, 0, 'F C Eb Ab C D'),
+                B: V([-1, 2, 4, 2, 2, 4], 2, 1, 'B F# A D G# F#'),
+                'F#': V([2, 4, 2, 2, 2, 4], 2, 0, 'F# C# E A C# D#')
+            },
+            maj13: {
+                C: V([-1, 3, 2, 2, 3, 0], 1, -1, 'C E G B D A'),
+                G: V([3, 2, 0, 0, 0, 0], 1, -1, 'G B D G B E'),
+                A: V([-1, 0, 2, 1, 2, 2], 1, -1, 'A E G# C# B F#'),
+                D: V([-1, 5, 4, 4, 5, 5], 4, -1, 'D A C# F# B E'),
+                F: V([-1, 3, 2, 2, 1, 0], 1, -1, 'F A C E G D'),
+                E: V([0, 2, 1, 1, 0, 2], 1, -1, 'E B D# G# C# F#'),
+                B: V([-1, 2, 4, 3, 4, 4], 2, 1, 'B F# A# D# G# E'),
+                'F#': V([2, 4, 3, 3, 2, 4], 2, 0, 'F# C# F A# D# G#')
+            },
+            maj7sharp11: {
+                C: V([-1, 3, 2, 3, 0, 0], 1, -1, 'C E G B F#'),
+                G: V([3, 2, 0, 0, 0, 2], 1, -1, 'G B D F# C# F#'),
+                A: V([-1, 0, 2, 1, 2, 2], 1, -1, 'A E G# C# D# F#'),
+                D: V([-1, 5, 4, 4, 5, 4], 4, -1, 'D A C# F# G# A'),
+                F: V([-1, 3, 2, 1, 1, 0], 1, -1, 'F A C E B'),
+                E: V([0, 2, 1, 1, 0, 2], 1, -1, 'E B D# G# A# F#')
+            },
+            aug7: {
+                C: V([-1, 3, 2, 1, 1, 4], 1, -1, 'C E G# Bb E'),
+                E: V([0, 3, 2, 1, 1, 0], 1, -1, 'E G# C D G#'),
+                G: V([3, 2, 1, 0, 0, 1], 1, -1, 'G B D# F B'),
+                A: V([-1, 0, 3, 2, 2, 1], 1, -1, 'A E G# C# F'),
+                D: V([-1, 5, 4, 3, 3, 2], 1, -1, 'D A# C F# C'),
+                F: V([1, 3, 2, 1, 1, 0], 1, -1, 'F A C# Eb A'),
+                B: V([-1, 2, 1, 0, 0, 1], 1, -1, 'B D# G A# D#')
+            },
+            dimMaj7: {
+                C: V([-1, 3, 4, 4, 4, 0], 1, -1, 'C Eb Gb B E'),
+                E: V([0, 1, 0, 0, 0, 0], 1, -1, 'E G Bb D# G'),
+                G: V([3, 4, 3, 3, 3, 2], 1, -1, 'G Bb Db F B'),
+                A: V([-1, 0, 1, 1, 1, 0], 1, -1, 'A C Eb G# C'),
+                D: V([-1, 5, 6, 5, 6, 5], 3, -1, 'D F Ab C# F'),
+                F: V([1, 2, 1, 1, 1, 0], 1, -1, 'F Ab Cb E Ab')
+            },
+            '9sus4': {
+                C: V([-1, 3, 3, 3, 3, 3], 1, 0, 'C F G Bb D'),
+                G: V([3, 3, 3, 3, 3, 3], 3, 0, 'G C D F A'),
+                A: V([-1, 0, 2, 2, 3, 3], 1, -1, 'A D E G B'),
+                D: V([-1, 5, 5, 5, 5, 5], 5, 0, 'D G A C E'),
+                E: V([0, 2, 2, 2, 0, 0], 1, -1, 'E A B D F#'),
+                F: V([1, 3, 3, 3, 3, 3], 1, 0, 'F Bb C Eb G'),
+                B: V([-1, 2, 4, 4, 4, 4], 2, 0, 'B E F# A C#')
+            },
+            '6sus4': {
+                C: V([-1, 3, 3, 2, 1, 0], 1, -1, 'C F G A E'),
+                G: V([3, 3, 0, 0, 1, 0], 1, -1, 'G C D E D'),
+                A: V([-1, 0, 2, 2, 3, 2], 1, -1, 'A D E F# E'),
+                D: V([-1, 5, 5, 4, 3, 5], 3, -1, 'D G A B A'),
+                E: V([0, 2, 2, 2, 0, 2], 1, -1, 'E A B C# B')
+            },
+            add11: {
+                C: V([-1, 3, 0, 0, 1, 0], 1, -1, 'C E G F E'),
+                G: V([3, 2, 0, 0, 1, 3], 1, -1, 'G B D C G'),
+                A: V([-1, 0, 2, 2, 3, 0], 1, -1, 'A E A C# D'),
+                D: V([-1, -1, 0, 2, 3, 3], 1, -1, 'D A D F# G'),
+                E: V([0, 2, 2, 1, 0, 0], 1, -1, 'E B E G# A'),
+                F: V([1, 3, 3, 2, 1, 1], 1, 0, 'F C F A Bb')
+            }
+        };
+
+        // ── BUILD LIBRARY ──
+        function buildLibrary() {
+            const lib = [];
+            const cats = ['major', 'minor', 'dom7', 'maj7', 'min7', 'sus2', 'sus4', 'add9', 'dom9', 'maj9', 'min9',
+                'dom11', 'dom13', 'dim', 'dim7', 'hdim', 'aug', 'power',
+                '7sus4', 'm6', '6/9', 'm11', 'm13', 'maj13', 'maj7sharp11', 'aug7', 'dimMaj7', '9sus4', '6sus4', 'add11'
+            ];
+            const catMap = {
+                major: 'major',
+                minor: 'minor',
+                dom7: 'dom7',
+                maj7: 'maj7',
+                min7: 'min7',
+                sus2: 'sus',
+                sus4: 'sus',
+                add9: 'sus',
+                dom9: 'ext',
+                maj9: 'ext',
+                min9: 'ext',
+                dom11: 'ext',
+                dom13: 'ext',
+                dim: 'dim',
+                dim7: 'dim',
+                hdim: 'dim',
+                aug: 'dim',
+                power: 'power',
+                '7sus4': 'sus',
+                m6: 'minor',
+                '6/9': 'ext',
+                m11: 'ext',
+                m13: 'ext',
+                maj13: 'ext',
+                maj7sharp11: 'maj7',
+                aug7: 'dim',
+                dimMaj7: 'dim',
+                '9sus4': 'sus',
+                '6sus4': 'sus',
+                add11: 'sus'
+            };
+            const nameMap = {
+                major: '',
+                minor: 'm',
+                dom7: '7',
+                maj7: 'maj7',
+                min7: 'm7',
+                sus2: 'sus2',
+                sus4: 'sus4',
+                add9: 'add9',
+                dom9: '9',
+                maj9: 'maj9',
+                min9: 'm9',
+                dom11: '11',
+                dom13: '13',
+                dim: 'dim',
+                dim7: 'dim7',
+                hdim: 'm7b5',
+                aug: 'aug',
+                power: '5',
+                '7sus4': '7sus4',
+                m6: 'm6',
+                '6/9': '6/9',
+                m11: 'm11',
+                m13: 'm13',
+                maj13: 'maj13',
+                maj7sharp11: 'maj7#11',
+                aug7: 'aug7',
+                dimMaj7: 'dim(maj7)',
+                '9sus4': '9sus4',
+                '6sus4': '6sus4',
+                add11: 'add11'
+            };
+            const labelMap = {
+                major: 'Major',
+                minor: 'Minor',
+                dom7: 'Dominant 7',
+                maj7: 'Major 7',
+                min7: 'Minor 7',
+                sus2: 'Suspended 2',
+                sus4: 'Suspended 4',
+                add9: 'Add 9',
+                dom9: 'Dominant 9',
+                maj9: 'Major 9',
+                min9: 'Minor 9',
+                dom11: 'Dominant 11',
+                dom13: 'Dominant 13',
+                dim: 'Diminished',
+                dim7: 'Diminished 7',
+                hdim: 'Half-Diminished',
+                aug: 'Augmented',
+                power: 'Power Chord',
+                '7sus4': '7 Sus 4',
+                m6: 'Minor 6',
+                '6/9': '6/9',
+                m11: 'Minor 11',
+                m13: 'Minor 13',
+                maj13: 'Major 13',
+                maj7sharp11: 'Major 7 #11',
+                aug7: 'Augmented 7',
+                dimMaj7: 'Diminished Maj7',
+                '9sus4': '9 Sus 4',
+                '6sus4': '6 Sus 4',
+                add11: 'Add 11'
+            };
+            cats.forEach(c => {
+                const v = VOICINGS[c];
+                if (!v) return;
+                Object.entries(v).forEach(([root, d]) => {
+                    const suffix = nameMap[c] || '';
+                    const raw = root.includes('/') ? root : root;
+                    lib.push({
+                        name: raw + suffix,
+                        label: `${raw} ${labelMap[c] || ''}`.trim(),
+                        cat: catMap[c] || 'special',
+                        frets: d.frets,
+                        sf: d.sf || 1,
+                        bf: d.bf != null ? d.bf : -1,
+                        notes: d.notes || '',
+                        root: raw
+                    });
+                });
+            });
+
+            const slash = [
+                { name: 'C/G', label: 'C Major / G bass', frets: [3, 3, 2, 0, 1, 0], sf: 1, bf: -1, notes: 'G C E G C E',
+                    root: 'C' },
+                { name: 'G/F', label: 'G Major / F bass', frets: [1, 2, 0, 0, 0, 3], sf: 1, bf: -1, notes: 'F B D G B G',
+                    root: 'G' },
+                { name: 'D/A', label: 'D Major / A bass', frets: [-1, 0, 0, 2, 3, 2], sf: 1, bf: -1, notes: 'A D A D F#',
+                    root: 'D' },
+                { name: 'E/G#', label: 'E Major / G# bass', frets: [4, 2, 2, 1, 0, 0], sf: 1, bf: -1,
+                    notes: 'G# B E G# B E', root: 'E' },
+                { name: 'A/E', label: 'A Major / E bass', frets: [0, 0, 2, 2, 2, 0], sf: 1, bf: -1, notes: 'E A E A C# E',
+                    root: 'A' },
+                { name: 'F/A', label: 'F Major / A bass', frets: [-1, 0, 3, 2, 1, 1], sf: 1, bf: -1,
+                    notes: 'A F C F A C', root: 'F' },
+                { name: 'B/F#', label: 'B Major / F# bass', frets: [2, 2, 4, 4, 4, 2], sf: 2, bf: 0,
+                    notes: 'F# B F# B D# F#', root: 'B' },
+                { name: 'Cm/G', label: 'C Minor / G bass', frets: [3, 3, 5, 5, 4, 3], sf: 3, bf: 0,
+                    notes: 'G C G C Eb G', root: 'C' },
+                { name: 'Dm/A', label: 'D Minor / A bass', frets: [-1, 0, 0, 2, 3, 1], sf: 1, bf: -1, notes: 'A D A D F',
+                    root: 'D' },
+                { name: 'Em/G', label: 'E Minor / G bass', frets: [3, 2, 2, 0, 0, 0], sf: 1, bf: -1, notes: 'G B E G B E',
+                    root: 'E' },
+                { name: 'Am/C', label: 'A Minor / C bass', frets: [-1, 0, 2, 2, 1, 0], sf: 1, bf: -1,
+                    notes: 'C E A C E A', root: 'A' },
+                { name: 'Bm/F#', label: 'B Minor / F# bass', frets: [2, 2, 4, 4, 3, 2], sf: 2, bf: 0,
+                    notes: 'F# B F# B D F#', root: 'B' },
+                { name: 'G7/F', label: 'G7 / F bass', frets: [1, 2, 0, 0, 0, 1], sf: 1, bf: -1, notes: 'F B D G B F',
+                    root: 'G' },
+                { name: 'D7/C', label: 'D7 / C bass', frets: [-1, 3, 0, 2, 1, 2], sf: 1, bf: -1, notes: 'C A D F# C',
+                    root: 'D' },
+                { name: 'A7/G', label: 'A7 / G bass', frets: [3, 0, 2, 0, 2, 0], sf: 1, bf: -1, notes: 'G A E G C# E',
+                    root: 'A' },
+                { name: 'E7/D', label: 'E7 / D bass', frets: [-1, 2, 0, 1, 0, 0], sf: 1, bf: -1, notes: 'D B E G# D E',
+                    root: 'E' }
+            ];
+            slash.forEach(s => lib.push({ ...s, cat: 'special' }));
+
+            return lib;
+        }
+
+        // ── SVG RENDER ──
+        function drawChord(chord) {
+            const W = 128,
+                H = 106,
+                L = 22,
+                T = 18,
+                STR = 6,
+                FR = 4;
+            const FW = (W - L - 12) / (STR - 1),
+                FH = (H - T - 8) / FR;
+            const sf = chord.sf || 1,
+                bf = chord.bf != null ? chord.bf : -1;
+            let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+            if (sf === 1) s += `<rect x="${L}" y="${T-4}" width="${FW*5}" height="4" rx="1" fill="#7a6a4a"/>`;
+            for (let f = 0; f <= FR; f++) {
+                const y = T + f * FH;
+                if (f > 0) s += `<line x1="${L}" y1="${y}" x2="${L+FW*5}" y2="${y}" stroke="#2e2e2e" stroke-width="1"/>`;
+            }
+            for (let i = 0; i < STR; i++) {
+                const x = L + i * FW;
+                s += `<line x1="${x}" y1="${T}" x2="${x}" y2="${T+FH*FR}" stroke="#3a3020" stroke-width="1.1"/>`;
+            }
+            if (bf >= 0) {
+                const bx = L + bf * FW,
+                    by = T + FH * 0.5;
+                s += `<rect x="${bx-1}" y="${by-7}" width="${FW*(5-bf)+2}" height="14" rx="7" fill="#c9a84c" opacity="0.88"/>`;
+            }
+            for (let i = 0; i < STR; i++) {
+                const fv = chord.frets[i],
+                    cx = L + i * FW;
+                if (fv === -1) {
+                    s +=
+                        `<text x="${cx}" y="${T-5}" text-anchor="middle" font-size="9" font-weight="700" fill="#d94f3d" font-family="Inter">✕</text>`;
+                } else if (fv === 0) {
+                    s += `<circle cx="${cx}" cy="${T-7}" r="4.5" fill="none" stroke="#3abfbf" stroke-width="1.4"/>`;
+                } else {
+                    const rel = fv - (sf - 1),
+                        cy = T + (rel - 0.5) * FH;
+                    if (!(bf >= 0 && i >= bf && rel === 1)) s +=
+                        `<circle cx="${cx}" cy="${cy}" r="7" fill="#d4cfc4"/>`;
+                }
+            }
+            if (sf > 1) s +=
+                `<text x="${L-4}" y="${T+FH*0.55}" text-anchor="end" font-size="8.5" fill="#666" font-family="Inter">${sf}fr</text>`;
+            return s + '</svg>';
+        }
+
+        // ── UI ──
+        const library = buildLibrary();
+        let activeTab = 'all',
+            activeRoot = 'all',
+            searchTerm = '';
+
+        const tabsEl = document.getElementById('tabs');
+        CATEGORIES.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'tab-btn' + (cat.id === 'all' ? ' active' : '');
+            btn.textContent = cat.label;
+            btn.onclick = () => { activeTab = cat.id;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilters(); };
+            tabsEl.appendChild(btn);
+        });
+
+        const rootEl = document.getElementById('root-filter');
+        ['all', ...ROOT_DISPLAY].forEach(r => {
+            const btn = document.createElement('button');
+            btn.className = 'root-btn' + (r === 'all' ? ' active' : '');
+            btn.textContent = r === 'all' ? 'All Roots' : r;
+            btn.onclick = () => { activeRoot = r;
+                document.querySelectorAll('.root-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilters(); };
+            rootEl.appendChild(btn);
+        });
+
+        const secContainer = document.getElementById('sections');
+        Object.keys(CATEGORY_META).forEach(catId => {
+            const meta = CATEGORY_META[catId];
+            const sec = document.createElement('div');
+            sec.className = 'section';
+            sec.id = 'sec-' + catId;
+            sec.innerHTML = `
+            <div class="sec-head">
+              <div class="sec-title">${meta.label}</div>
+              <div class="sec-badge ${meta.badge}">${catId.toUpperCase()}</div>
+              <div class="sec-count" id="count-${catId}"></div>
+            </div>
+            <div class="chord-grid" id="grid-${catId}"></div>
+          `;
+            secContainer.appendChild(sec);
+        });
+
+        library.forEach((chord, idx) => {
+            const grid = document.getElementById('grid-' + chord.cat);
+            if (!grid) return;
+            const card = document.createElement('div');
+            card.className = 'chord-card';
+            card.dataset.cat = chord.cat;
+            card.dataset.root = chord.root;
+            card.dataset.name = chord.name.toLowerCase();
+            card.dataset.label = chord.label.toLowerCase();
+            card.dataset.idx = idx;
+            card.innerHTML = `
+            <div class="chord-name">${chord.name}</div>
+            <div class="chord-label">${chord.label}</div>
+            ${drawChord(chord)}
+            <div class="chord-notes">${chord.notes}</div>
+          `;
+            grid.appendChild(card);
+        });
+
+        document.getElementById('total-count').textContent = library.length + ' Chords';
+
+        function clearSearch() {
+            document.getElementById('search').value = '';
+            searchTerm = '';
+            applyFilters();
+        }
+        document.getElementById('search').addEventListener('input', function() {
+            searchTerm = this.value.toLowerCase().trim();
+            applyFilters();
+        });
+
+        function applyFilters() {
+            let visible = 0;
+            Object.keys(CATEGORY_META).forEach(catId => {
+                const sec = document.getElementById('sec-' + catId);
+                const showSec = (activeTab === 'all' || activeTab === catId);
+                let secCount = 0;
+                sec.querySelectorAll('.chord-card').forEach(card => {
+                    const matchCat = (activeTab === 'all' || card.dataset.cat === activeTab);
+                    const matchRoot = (activeRoot === 'all' || card.dataset.root === activeRoot || card
+                        .dataset.root === activeRoot.replace('#', '#'));
+                    const matchSearch = !searchTerm || (card.dataset.name.includes(searchTerm) || card
+                        .dataset.label.includes(searchTerm) || card.dataset.root.toLowerCase().includes(
+                            searchTerm));
+                    const show = matchCat && matchRoot && matchSearch;
+                    card.classList.toggle('hidden', !show);
+                    if (show) { visible++;
+                        secCount++; }
+                });
+                sec.classList.toggle('hidden', !showSec || secCount === 0);
+                const cnt = document.getElementById('count-' + catId);
+                if (cnt) cnt.textContent = secCount > 0 ? `${secCount} chord${secCount!==1?'s':''}` : '';
+            });
+            document.getElementById('result-count').textContent = (searchTerm || activeRoot !== 'all') ? `${visible} result${visible!==1?'s':''}` :
+                '';
+            document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+        }
+        applyFilters();
+    </script>
+</body>
+</html>
